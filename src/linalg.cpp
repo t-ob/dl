@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -56,6 +57,22 @@ Matrix identity_matrix(int n)
         m.set(i, i, 1.0);
 
     return m;
+}
+
+Matrix diagonal_matrix(int m, int n, const std::vector<double>& ds)
+{
+    if (ds.size() > std::min(m, n))
+        throw std::domain_error("Too many entries");
+
+    Matrix diag(m, n);
+    for (int i = 0; i < ds.size(); ++i)
+        diag.set(i, i, ds[i]);
+
+    return diag;
+}
+
+Matrix diagonal_matrix(const std::vector<double>& ds) {
+    return diagonal_matrix(ds.size(), ds.size(), ds);
 }
 
 void repr(Matrix m)
@@ -135,26 +152,14 @@ double fib(int n)
 
 int main()
 {
-    Matrix m = identity_matrix(3);
+    std::vector<double> ds;
+    ds.push_back(1.0);
+    ds.push_back(2.0);
+    ds.push_back(3.0);
+
+    Matrix m = diagonal_matrix(ds);
 
     repr(m);
-
-    Matrix a(2, 2);
-    a.set(0, 0, 1.0);
-    a.set(0, 1, 1.0);
-    a.set(1, 0, 0.0);
-    a.set(1, 1, 1.0);
-
-    repr(a);
-    repr(a.transpose());
-
-    repr(a + a.transpose());
-
-    repr(a * a);
-    repr(a * a * a);
-
-    for (int i = 0; i <= 10; ++i)
-        std::cout << i << "\t" << fib(i) << std::endl;
 
     return 0;
 }
