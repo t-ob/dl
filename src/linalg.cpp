@@ -3,31 +3,37 @@
 #include <vector>
 #include "linalg.h"
 
+// O(m*n) space
 Matrix::Matrix(int r, int c) : _rows(r), _cols(c)
 {
     _data.resize(r * c, 0.0);
 }
 
+// O(1)
 void Matrix::set(int i, int j, double x)
 {
     _data[_cols * i + j] = x;
 }
 
+// O(1)
 double Matrix::get(int i, int j) const
 {
     return _data[_cols * i + j];
 }
 
+// O(1)
 int Matrix::rows() const
 {
     return _rows;
 }
 
+// O(1)
 int Matrix::cols() const
 {
     return _cols;
 }
 
+// O(m*n) space and complexity
 Matrix Matrix::transpose() const
 {
     Matrix mt(_cols, _rows);
@@ -35,13 +41,14 @@ Matrix Matrix::transpose() const
     {
         for (int j = 0; j < _cols; ++j)
         {
-            mt.set(j, i, this->get(i, j));
+            mt.set(j, i, get(i, j));
         }
     }
 
     return mt;
 }
 
+// O(n*n) space and O(n) complexity
 Matrix identity_matrix(int n)
 {
     Matrix m(n, n);
@@ -63,6 +70,7 @@ void repr(Matrix m)
     }
 }
 
+// O(m*n) space and O(m*n) complexity
 Matrix operator+(const Matrix &a, const Matrix &b)
 {
     // Matrices be of same shape
@@ -81,6 +89,7 @@ Matrix operator+(const Matrix &a, const Matrix &b)
     return c;
 }
 
+// O(a_n*b_m space) and O(a_n*b_m*a_m) complexity
 Matrix operator*(const Matrix &a, const Matrix &b)
 {
     // Number of columns in LHS must be equal to rows in RHS
