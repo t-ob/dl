@@ -52,7 +52,7 @@ int Matrix<T>::cols() const
 template <class T>
 T Matrix<T>::trace() const
 {
-    T trace;
+    T trace = (T) 0;
     for (int i = 0; i < std::min(_rows, _cols); ++i)
     {
         trace += get(i, i);
