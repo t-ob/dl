@@ -20,6 +20,7 @@ class Matrix {
     Matrix transpose() const;
 
     Matrix(int, int);
+    Matrix(int, int, T);
 };  
 
 #endif
