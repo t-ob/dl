@@ -5,37 +5,55 @@
 #include "linalg.h"
 
 // O(m*n) space
-Matrix::Matrix(int r, int c) : _rows(r), _cols(c)
+template <class T>
+Matrix<T>::Matrix(int r, int c) : _rows(r), _cols(c)
 {
-    _data.resize(r * c, 0.0);
+    _data.resize(r * c, T());
 }
 
 // O(1)
-void Matrix::set(int i, int j, double x)
+template <class T>
+void Matrix<T>::set(int i, int j, T x)
 {
     _data[_cols * i + j] = x;
 }
 
 // O(1)
-double Matrix::get(int i, int j) const
+template <class T>
+T Matrix<T>::get(int i, int j) const
 {
     return _data[_cols * i + j];
 }
 
 // O(1)
-int Matrix::rows() const
+template <class T>
+int Matrix<T>::rows() const
 {
     return _rows;
 }
 
 // O(1)
-int Matrix::cols() const
+template <class T>
+int Matrix<T>::cols() const
 {
     return _cols;
 }
 
+template <class T>
+T Matrix<T>::trace() const
+{
+    T trace;
+    for (int i = 0; i < std::min(_rows, _cols); ++i)
+    {
+        trace += get(i, i);
+    }
+
+    return trace;
+}
+
 // O(m*n) space and complexity
-Matrix Matrix::transpose() const
+template <class T>
+Matrix<T> Matrix<T>::transpose() const
 {
     Matrix mt(_cols, _rows);
     for (int i = 0; i < _rows; ++i)
@@ -50,32 +68,36 @@ Matrix Matrix::transpose() const
 }
 
 // O(n*n) space and O(n) complexity
-Matrix identity_matrix(int n)
-{
-    Matrix m(n, n);
-    for (int i = 0; i < n; ++i)
-        m.set(i, i, 1.0);
+// template <class T>
+// Matrix<T> identity_matrix(int n)
+// {
+//     Matrix m(n, n);
+//     for (int i = 0; i < n; ++i)
+//         m.set(i, i, 1.0);
 
-    return m;
-}
+//     return m;
+// }
 
-Matrix diagonal_matrix(int m, int n, const std::vector<double>& ds)
+template <class T>
+Matrix<T> diagonal_matrix(int m, int n, const std::vector<T>& ds)
 {
     if (ds.size() > std::min(m, n))
         throw std::domain_error("Too many entries");
 
-    Matrix diag(m, n);
+    Matrix<T> diag(m, n);
     for (int i = 0; i < ds.size(); ++i)
         diag.set(i, i, ds[i]);
 
     return diag;
 }
 
-Matrix diagonal_matrix(const std::vector<double>& ds) {
+template <class T>
+Matrix<T> diagonal_matrix(const std::vector<T>& ds) {
     return diagonal_matrix(ds.size(), ds.size(), ds);
 }
 
-void repr(Matrix m)
+template <class T>
+void repr(Matrix<T> m)
 {
     for (int i = 0; i < m.rows(); ++i)
     {
@@ -88,13 +110,14 @@ void repr(Matrix m)
 }
 
 // O(m*n) space and O(m*n) complexity
-Matrix operator+(const Matrix &a, const Matrix &b)
+template <class T>
+Matrix<T> operator+(const Matrix<T> &a, const Matrix<T> &b)
 {
     // Matrices be of same shape
     if (a.rows() != b.rows() || a.cols() != b.cols())
         throw std::domain_error("Matrices wrong shape");
 
-    Matrix c(a.rows(), a.cols());
+    Matrix<T> c(a.rows(), a.cols());
     for (int i = 0; i < a.rows(); ++i)
     {
         for (int j = 0; j < a.cols(); ++j)
@@ -107,13 +130,14 @@ Matrix operator+(const Matrix &a, const Matrix &b)
 }
 
 // O(a_n*b_m space) and O(a_n*b_m*a_m) complexity
-Matrix operator*(const Matrix &a, const Matrix &b)
+template <class T>
+Matrix<T> operator*(const Matrix<T> &a, const Matrix<T> &b)
 {
     // Number of columns in LHS must be equal to rows in RHS
     if (a.cols() != b.rows())
         throw std::domain_error("Incompatible shape");
 
-    Matrix c(a.rows(), b.cols());
+    Matrix<T> c(a.rows(), b.cols());
     for (int i = 0; i < a.rows(); ++i)
     {
         for (int j = 0; j < b.cols(); ++j)
@@ -130,17 +154,17 @@ Matrix operator*(const Matrix &a, const Matrix &b)
     return c;
 }
 
-double fib(int n)
+unsigned long long fib(int n)
 {
-    Matrix f(2, 2);
-    f.set(0, 0, 0.0);
-    f.set(0, 1, 1.0);
-    f.set(1, 0, 1.0);
-    f.set(1, 1, 1.0);
+    Matrix<unsigned long long> f(2, 2);
+    f.set(0, 0, 0);
+    f.set(0, 1, 1);
+    f.set(1, 0, 1);
+    f.set(1, 1, 1);
 
-    Matrix b(2, 1);
-    b.set(0, 0, 0.0);
-    b.set(1, 0, 1.0);
+    Matrix<unsigned long long> b(2, 1);
+    b.set(0, 0, 0);
+    b.set(1, 0, 1);
 
     while (n > 0) {
         b = f * b;
@@ -152,14 +176,16 @@ double fib(int n)
 
 int main()
 {
-    std::vector<double> ds;
-    ds.push_back(1.0);
-    ds.push_back(2.0);
-    ds.push_back(3.0);
+    std::vector<int> ds;
+    ds.push_back(1);
+    ds.push_back(2);
+    ds.push_back(3);
 
-    Matrix m = diagonal_matrix(ds);
+    Matrix<int> m = diagonal_matrix(ds);
 
     repr(m);
+
+    std::cout << fib(99) << std::endl;
 
     return 0;
 }

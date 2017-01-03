@@ -3,18 +3,20 @@
 
 #include <vector>
 
+template <class T>
 class Matrix {
     private:
     int _rows;
     int _cols;
-    std::vector<double> _data;
+    std::vector<T> _data;
 
     public:
-    void set(int, int, double);
-    double get(int, int) const;
+    void set(int, int, T);
+    T get(int, int) const;
     int rows() const;
     int cols() const;
 
+    T trace() const;
     Matrix transpose() const;
 
     Matrix(int, int);
