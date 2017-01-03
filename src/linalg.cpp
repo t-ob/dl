@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <chrono>
+#include <ctime>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -206,8 +208,19 @@ unsigned long long fib(int n)
 
 int main()
 {
-    for (int i = 1; i < 94; ++i)
-        std::cout << i << "\t" << fib(i) << std::endl;
+    // for (int i = 1; i < 94; ++i)
+    //     std::cout << i << "\t" << fib(i) << std::endl;
+
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    for (int i = 0; i < 100; ++i) {
+        start = std::chrono::system_clock::now();
+        for (int j = 0; j < 1000; ++j) {
+            fib(93);
+        }
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end-start;
+        std::cout << elapsed_seconds.count() << std::endl;
+    }
 
     return 0;
 }
