@@ -142,7 +142,7 @@ Matrix<T> operator*(const Matrix<T> &a, const Matrix<T> &b)
     {
         for (int j = 0; j < b.cols(); ++j)
         {
-            double c_ij = 0.0;
+            T c_ij = (T) 0;
             for (int k = 0; k < a.cols(); ++k)
             {
                 c_ij += a.get(i, k) * b.get(k, j);
