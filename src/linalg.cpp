@@ -15,8 +15,9 @@ template <class T>
 Matrix<T>::Matrix(int r, int c, T x) : _rows(r), _cols(c)
 {
     _data.resize(r * c, T());
-    for (int i = 0; i < r; ++i) {
-        _data[i*c + i] = x;
+    for (int i = 0; i < r; ++i)
+    {
+        _data[i * c + i] = x;
     }
 }
 
@@ -82,13 +83,13 @@ Matrix<T> identity_matrix(int n)
 {
     Matrix<T> m(n, n);
     for (int i = 0; i < n; ++i)
-        m.set(i, i, (T) 1);
+        m.set(i, i, (T)1);
 
     return m;
 }
 
 template <class T>
-Matrix<T> diagonal_matrix(int m, int n, const std::vector<T>& ds)
+Matrix<T> diagonal_matrix(int m, int n, const std::vector<T> &ds)
 {
     if (ds.size() > std::min(m, n))
         throw std::domain_error("Too many entries");
@@ -101,7 +102,8 @@ Matrix<T> diagonal_matrix(int m, int n, const std::vector<T>& ds)
 }
 
 template <class T>
-Matrix<T> diagonal_matrix(const std::vector<T>& ds) {
+Matrix<T> diagonal_matrix(const std::vector<T> &ds)
+{
     return diagonal_matrix(ds.size(), ds.size(), ds);
 }
 
@@ -151,7 +153,7 @@ Matrix<T> operator*(const Matrix<T> &a, const Matrix<T> &b)
     {
         for (int j = 0; j < b.cols(); ++j)
         {
-            T c_ij = (T) 0;
+            T c_ij = (T)0;
             for (int k = 0; k < a.cols(); ++k)
             {
                 c_ij += a.get(i, k) * b.get(k, j);
@@ -164,26 +166,30 @@ Matrix<T> operator*(const Matrix<T> &a, const Matrix<T> &b)
 }
 
 template <class T>
-Matrix<T> pow(const Matrix<T>& m, int exp)
+Matrix<T> pow(const Matrix<T> &m, int exp)
 {
     if (m.rows() != m.cols())
         throw std::domain_error("Non-square matrix input");
     if (exp < 1)
         throw std::domain_error("Non-positive exponent");
-    
-    Matrix<T> a(m.rows(), m.rows(), (T) 1);
-    Matrix<T> b = m;    
-    while (exp > 1) {
-        if (exp % 2 == 0) {
-            b = b*b;
+
+    Matrix<T> a(m.rows(), m.rows(), (T)1);
+    Matrix<T> b = m;
+    while (exp > 1)
+    {
+        if (exp % 2 == 0)
+        {
+            b = b * b;
             exp /= 2;
-        } else {
-            a = a*b;
+        }
+        else
+        {
+            a = a * b;
             exp -= 1;
         }
     }
 
-    return a*b;
+    return a * b;
 }
 
 // Only good up to n = 93 for 64bit ULL!
