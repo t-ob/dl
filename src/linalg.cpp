@@ -11,6 +11,15 @@ Matrix<T>::Matrix(int r, int c) : _rows(r), _cols(c)
     _data.resize(r * c, T());
 }
 
+template <class T>
+Matrix<T>::Matrix(int r, int c, T x) : _rows(r), _cols(c)
+{
+    _data.resize(r * c, T());
+    for (int i = 0; i < r; ++i) {
+        _data[i*c + i] = x;
+    }
+}
+
 // O(1)
 template <class T>
 void Matrix<T>::set(int i, int j, T x)
@@ -68,15 +77,15 @@ Matrix<T> Matrix<T>::transpose() const
 }
 
 // O(n*n) space and O(n) complexity
-// template <class T>
-// Matrix<T> identity_matrix(int n)
-// {
-//     Matrix m(n, n);
-//     for (int i = 0; i < n; ++i)
-//         m.set(i, i, 1.0);
+template <class T>
+Matrix<T> identity_matrix(int n)
+{
+    Matrix<T> m(n, n);
+    for (int i = 0; i < n; ++i)
+        m.set(i, i, (T) 1);
 
-//     return m;
-// }
+    return m;
+}
 
 template <class T>
 Matrix<T> diagonal_matrix(int m, int n, const std::vector<T>& ds)
@@ -154,38 +163,45 @@ Matrix<T> operator*(const Matrix<T> &a, const Matrix<T> &b)
     return c;
 }
 
+template <class T>
+Matrix<T> pow(const Matrix<T>& m, int exp)
+{
+    if (m.rows() != m.cols())
+        throw std::domain_error("Non-square matrix input");
+    if (exp < 1)
+        throw std::domain_error("Non-positive exponent");
+    
+    Matrix<T> a(m.rows(), m.rows(), (T) 1);
+    Matrix<T> b = m;    
+    while (exp > 1) {
+        if (exp % 2 == 0) {
+            b = b*b;
+            exp /= 2;
+        } else {
+            a = a*b;
+            exp -= 1;
+        }
+    }
+
+    return a*b;
+}
+
+// Only good up to n = 93 for 64bit ULL!
 unsigned long long fib(int n)
 {
     Matrix<unsigned long long> f(2, 2);
-    f.set(0, 0, 0);
-    f.set(0, 1, 1);
-    f.set(1, 0, 1);
-    f.set(1, 1, 1);
+    f.set(0, 0, 0ULL);
+    f.set(0, 1, 1ULL);
+    f.set(1, 0, 1ULL);
+    f.set(1, 1, 1ULL);
 
-    Matrix<unsigned long long> b(2, 1);
-    b.set(0, 0, 0);
-    b.set(1, 0, 1);
-
-    while (n > 0) {
-        b = f * b;
-        n--;
-    }
-
-    return b.get(0, 0);
+    return pow(f, n).get(0, 1);
 }
 
 int main()
 {
-    std::vector<int> ds;
-    ds.push_back(1);
-    ds.push_back(2);
-    ds.push_back(3);
-
-    Matrix<int> m = diagonal_matrix(ds);
-
-    repr(m);
-
-    std::cout << fib(99) << std::endl;
+    for (int i = 1; i < 94; ++i)
+        std::cout << i << "\t" << fib(i) << std::endl;
 
     return 0;
 }
